@@ -5,8 +5,8 @@ import 'package:http/http.dart' as http;
 
 class ApiMunicipiosService {
 
-  static Future<List<Municipio>> fetchMunicipios(int codigo) async {
-    final response = await http.get(Uri.parse(LISTAR_MUNICIPIOS_URL(codigo)));
+  static Future<List<Municipio>> fetchMunicipios(String sigla) async {
+    final response = await http.get(Uri.parse(LISTAR_MUNICIPIOS_URL(sigla)));
 
     if (response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body);

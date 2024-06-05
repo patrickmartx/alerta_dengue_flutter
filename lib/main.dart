@@ -9,9 +9,9 @@ void main() {
 class InfoArgs {
   final DateTime data;
   final String nomeDoenca;
-  final int codigo;
+  final String sigla;
 
-  const InfoArgs(this.data, this.nomeDoenca, this.codigo);
+  const InfoArgs(this.data, this.nomeDoenca, this.sigla);
 }
 
 class MyApp extends StatelessWidget {

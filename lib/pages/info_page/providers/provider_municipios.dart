@@ -11,9 +11,9 @@ class MunicipioProvider with ChangeNotifier {
   List<Municipio> get municipios => _municipios;
   bool get isLoading => _isLoading;
 
-  Future<void> carregarMunicipios(int codigo) async {
+  Future<void> carregarMunicipios(String sigla) async {
     try {
-      _municipios = await ApiMunicipiosService.fetchMunicipios(codigo);
+      _municipios = await ApiMunicipiosService.fetchMunicipios(sigla);
     } catch (e) {
       print(e);
     } finally {

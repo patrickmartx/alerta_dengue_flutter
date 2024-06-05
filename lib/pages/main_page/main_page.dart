@@ -24,7 +24,7 @@ class _MainPageState extends State<MainPage> {
   DateTime data = DateTime.now();
   List<Estado> estados = [];
   bool isLoading = true;
-  int estadoSelecionado = 0;
+  String estadoSelecionado = "";
 
   @override
   void initState() {
@@ -130,7 +130,7 @@ class _MainPageState extends State<MainPage> {
                         : ListaEstados(
                             estados: estados,
                             onTap: (Estado estado) {
-                              estadoSelecionado = estado.codigo;
+                              estadoSelecionado = estado.sigla;
                               print("$doencaSelecionada - $data - $estadoSelecionado");
                               Navigator.pushNamed(
                                   context, InfoPage.routeName,
