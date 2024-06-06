@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:alerta_dengue/data/model_casos_dengue.dart';
-import 'package:alerta_dengue/routes/api_routes/api_locais.dart'; // Certifique-se de que o URL está aqui
+import 'package:alerta_dengue/routes/api_routes/api_locais.dart';
 import 'package:http/http.dart' as http;
 
 class ApiCasosDengueService {
@@ -8,7 +8,12 @@ class ApiCasosDengueService {
     final response = await http.get(Uri.parse('$ALERTADENGUE_BASE_URL$parametros'));
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+      List<dynamic> data = json.decode(response.body);
+
+      if (data.isEmpty) {
+        throw new Exception("Não há itens para consulta.");
+      }
+
       return CasosDengue.fromJson(data);
     } else {
       throw Exception('Falha ao carregar os casos de dengue');

@@ -1,12 +1,11 @@
-import 'dart:js_interop';
-
 import 'package:alerta_dengue/data/model_municipios.dart';
 import 'package:alerta_dengue/main.dart';
-import 'package:alerta_dengue/pages/info_page/info_utils/casos_dengue_card.dart';
 import 'package:alerta_dengue/pages/info_page/info_utils/lista_municipios.dart';
+import 'package:alerta_dengue/pages/info_page/providers/provider_casos_dengue.dart';
 import 'package:alerta_dengue/pages/info_page/service/service_casos_dengue.dart';
 import 'package:alerta_dengue/pages/info_page/service/service_municipios.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class InfoPage extends StatefulWidget {
   const InfoPage({super.key});
@@ -24,9 +23,7 @@ class CalcularSemanaEpidemiologica {
           primeiraSegundaFeiraDoAno.add(const Duration(days: 1));
     }
     int diferencaEmDias = data.difference(primeiraSegundaFeiraDoAno).inDays;
-    int semanaEpidemiologica = (diferencaEmDias / 7).ceil() + 1;
-
-    return semanaEpidemiologica;
+    return (diferencaEmDias / 7).ceil() + 1;
   }
 }
 
@@ -78,13 +75,20 @@ class _InfoPageState extends State<InfoPage> {
       isLoadingCasosDengue = true;
     });
     try {
-      final fetchedCasosDengue = await ApiCasosDengueService.fetchCasosDengue(
+      await ApiCasosDengueService.fetchCasosDengue(
           getParametros(data, nomeDoenca, codigoMunicipio));
       setState(() {
         isLoadingCasosDengue = false;
       });
     } catch (e) {
-      print("erro aqui ${e.runtimeType} ${e.jsify()} $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          padding: EdgeInsets.only(bottom: 100),
+          backgroundColor: Colors.red,
+          content: Text(
+              'Nenhum caso de dengue encontrado para a data selecionada.'),
+        ),
+      );
     }
   }
 
@@ -100,28 +104,21 @@ class _InfoPageState extends State<InfoPage> {
           },
         ),
         centerTitle: true,
-        title: RichText(
-          text: const TextSpan(
+        title: const Text.rich(
+          TextSpan(
             children: [
               TextSpan(
-                text: "Alerta ",
-                style: TextStyle(fontSize: 20.0, color: Colors.white),
-              ),
+                  text: "Alerta ",
+                  style: TextStyle(fontSize: 20.0, color: Colors.white)),
               TextSpan(
-                text: "Dengue",
-                style: TextStyle(
-                  fontSize: 20.0,
-                  color: Colors.red,
-                ),
-              ),
+                  text: "Dengue",
+                  style: TextStyle(fontSize: 20.0, color: Colors.red)),
             ],
           ),
         ),
         backgroundColor: Colors.black,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(25),
-          ),
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
         ),
       ),
       body: Padding(
@@ -160,6 +157,56 @@ class _InfoPageState extends State<InfoPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class CasosDengueCard extends StatelessWidget {
+  final String parametros;
+
+  const CasosDengueCard({super.key, required this.parametros});
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context) =>
+          CasosDengueProvider()..carregarCasosDengue(parametros),
+      child: Consumer<CasosDengueProvider>(
+        builder: (context, provider, child) {
+          if (provider.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (provider.casosDengue == null) {
+            return const Center(child: Text('Erro ao carregar dados'));
+          } else {
+            final casosDengue = provider.casosDengue!;
+            return Card(
+              margin: const EdgeInsets.all(16.0),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('ID: ${casosDengue.id}',
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 8.0),
+                    Text('Casos Previstos: ${casosDengue.casosPrevistos}'),
+                    const SizedBox(height: 8.0),
+                    Text('Casos: ${casosDengue.casos}'),
+                    const SizedBox(height: 8.0),
+                    Text('Nível: ${casosDengue.nivel}'),
+                    const SizedBox(height: 8.0),
+                    Text(
+                        'Temperatura Mínima: ${casosDengue.temperaturaMinima}'),
+                    const SizedBox(height: 8.0),
+                    Text(
+                        'Temperatura Máxima: ${casosDengue.temperaturaMaxima}'),
+                  ],
+                ),
+              ),
+            );
+          }
+        },
       ),
     );
   }
