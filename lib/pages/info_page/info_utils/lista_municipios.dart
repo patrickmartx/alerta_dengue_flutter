@@ -23,7 +23,7 @@ class _MunicipioDropdownState extends State<MunicipioDropdown> {
   @override
   void initState() {
     super.initState();
-    selectedMunicipio = widget.municipioSelecionado ?? widget.municipios.first;
+    selectedMunicipio = widget.municipioSelecionado ?? null;
   }
 
   @override

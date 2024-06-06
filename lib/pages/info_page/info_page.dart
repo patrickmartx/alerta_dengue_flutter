@@ -85,8 +85,8 @@ class _InfoPageState extends State<InfoPage> {
         SnackBar(
           padding: EdgeInsets.only(bottom: 100),
           backgroundColor: Colors.red,
-          content: Text(
-              'Nenhum caso de dengue encontrado para a data selecionada.'),
+          content:
+              Text('Nenhum caso de dengue encontrado para a data selecionada.'),
         ),
       );
     }
@@ -126,26 +126,35 @@ class _InfoPageState extends State<InfoPage> {
         child: Column(
           children: [
             Expanded(
-              flex: 1,
+              flex: 2,
               child: isLoadingMunicipios
                   ? const Center(child: CircularProgressIndicator())
                   : Center(
-                      child: MunicipioDropdown(
-                        municipios: municipios,
-                        municipioSelecionado: municipioSelecionado,
-                        onChanged: (Municipio? novoValor) {
-                          setState(() {
-                            municipioSelecionado = novoValor;
-                            if (municipioSelecionado != null) {
-                              fetchCasosDengue(municipioSelecionado!.codigo);
-                            }
-                          });
-                        },
+                      child: Column(
+                        children: [
+                          Text("Municípios"),
+                          Padding(
+                            padding: EdgeInsets.only(top: 10),
+                            child: MunicipioDropdown(
+                              municipios: municipios,
+                              municipioSelecionado: municipioSelecionado,
+                              onChanged: (Municipio? novoValor) {
+                                setState(() {
+                                  municipioSelecionado = novoValor;
+                                  if (municipioSelecionado != null) {
+                                    fetchCasosDengue(
+                                        municipioSelecionado!.codigo);
+                                  }
+                                });
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
             ),
             Expanded(
-              flex: 11,
+              flex: 10,
               child: isLoadingCasosDengue
                   ? const Center(child: CircularProgressIndicator())
                   : municipioSelecionado == null

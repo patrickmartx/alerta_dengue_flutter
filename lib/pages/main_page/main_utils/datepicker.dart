@@ -10,14 +10,14 @@ class DatePickerTextField extends StatefulWidget {
 }
 
 class _DatePickerTextFieldState extends State<DatePickerTextField> {
-  DateTime selectedDate = DateTime.now();
+  DateTime selectedDate = DateTime.now().subtract(const Duration(days: 10));
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: selectedDate,
       firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
+      lastDate: DateTime.now().subtract(const Duration(days: 10)),
     );
 
     if (pickedDate != null && pickedDate != selectedDate)

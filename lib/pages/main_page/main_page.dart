@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:alerta_dengue/data/model_estados.dart';
 import 'package:alerta_dengue/main.dart';
 import 'package:alerta_dengue/pages/info_page/info_page.dart';
@@ -6,9 +5,7 @@ import 'package:alerta_dengue/pages/main_page/main_utils/datepicker.dart';
 import 'package:alerta_dengue/pages/main_page/main_utils/lista_estados.dart';
 import 'package:alerta_dengue/pages/main_page/main_utils/title_component.dart';
 import 'package:alerta_dengue/pages/main_page/service/service_estados.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -21,7 +18,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final List<String> DOENCAS = ["Dengue", "Chikungunya", "Zika"];
   String doencaSelecionada = "";
-  DateTime data = DateTime.now();
+  DateTime data = DateTime.now().subtract(const Duration(days: 10));
   List<Estado> estados = [];
   bool isLoading = true;
   int estadoSelecionado = 0;
@@ -80,7 +77,7 @@ class _MainPageState extends State<MainPage> {
           child: Column(
             children: [
               Expanded(
-                flex: 2,
+                flex: 3,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
